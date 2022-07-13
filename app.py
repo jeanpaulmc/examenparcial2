@@ -4,16 +4,23 @@ import sys
 from sqlalchemy import sql
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:melendez2016@localhost:5432/software2'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:melendez2016@localhost:5432/examenparcial'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 
 class Usuario(db.Model):
-    __tablename__ = 'usuario'
+    __tablename__ = 'publisher'
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(80), nullable=False)
     contraseña = db.Column(db.String(80), nullable=False)
+
+
+class Suscriber(db.Model):
+    __tablename__ = 'suscriber'
+    id = db.Column(db.Integer, primary_key=True)
+    mensaje = db.Column(db.String(80), nullable=False)
+    mirar_topic = db.Column(db.String(80), nullable=False)
 
 
 db.create_all()
@@ -40,6 +47,17 @@ def authenticate_user():
         response['error_message'] = "Usuario o contraseña incorrecto"
     response['error'] = error
     return jsonify(response)
+
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+
+if __name__ == '__main__':
+    app.run(port=5003, debug=True)
+else:
+    print('using global variables from FLASK')
 
 
 @app.route('/')
